@@ -43,8 +43,11 @@ class SupabaseService {
             'name': name,
             'age': age,
           })
-          .eq('id', id)
-          .select();
+          .eq('id', id.toString())
+          .select()
+          .single();
+
+      print("Update Response: $response");  // Debug log
 
       return response;
     } catch (error) {
@@ -58,21 +61,19 @@ class SupabaseService {
       final response=await supabase
         .from('students')
         .delete()
-        .eq('id',id);
+        .eq('id',id.toString());
 
       return response;
     } catch (error) {
       throw Exception("Delete Error $error");
     }
   }
-
-
 }
 
 /*          Extra Features to solect Queries  
                       Also Add Some Conditions          =>  "Filters"  <=
 
-          .eq('age':20);   -> Select where age is 20
+          .eq('age':20);   -> Select where age equals 20
           .neq('age':20);   -> Select where age is not 20
           .gt('age':20);   ->age is greater than 20
           .gte('age':20);   ->age is greater than and equal to 20
@@ -80,10 +81,10 @@ class SupabaseService {
           .lte('age':20);   ->age is less than and equal to 20
           .like('name','S%');  ->where names Starts with S
           .like('name','%a');  ->where names ends with A
-          .like('name','%and%');  ->where names contains "and"
+          .like('name','%and%');  ->where names contains "and"  eg Sandy,Candy
           .ilike('name','%Sherry%');  ->Case inSenstive =where names contains "sherry" "SHERRY" anything
           .in('age',[18,19,20]);  ->student aged 18 19 20
-          .not('age','gt',20);   ->ages not greater than 20
+          .not_('age','gt',20);   ->ages not greater than 20
           .is_('age',null);  ->Null check
           .order('created_at',ascending:false);   -> Newest First
           .limit(5)  ->only first 5 students
@@ -178,3 +179,4 @@ Supabase supports joining relational tables.
 Example:
 
 Students + marks:
+*/
