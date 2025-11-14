@@ -1,4 +1,5 @@
-import 'package:MyAppSupaBase/Screen.dart';
+
+import 'package:MyAppSupaBase/todoListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const StudentScreen(),
+      home: const mainScreen(),
     );
   }
 }

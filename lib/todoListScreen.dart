@@ -1,21 +1,21 @@
+import 'package:MyAppSupaBase/supabase_service.dart';
 import 'package:flutter/material.dart';
-import 'supabase_service.dart';
 
-class StudentScreen extends StatefulWidget {
-  const StudentScreen({super.key});
+class mainScreen extends StatefulWidget {
+  const mainScreen({super.key});
 
   @override
-  State<StudentScreen> createState() => _StudentScreenState();
+  State<mainScreen> createState() => _mainScreenState();
 }
 
-class _StudentScreenState extends State<StudentScreen> {
-  final SupabaseService supabaseService = SupabaseService();
-
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
+class _mainScreenState extends State<mainScreen> {
+  SupabaseService supabaseService = SupabaseService();
 
   List<dynamic> students = [];
-  String? selectedId; // will always be a String
+  String? selectedId;
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
 
   @override
   void initState() {
@@ -23,7 +23,6 @@ class _StudentScreenState extends State<StudentScreen> {
     fetchStudents();
   }
 
-  // READ — fetch student list
   Future<void> fetchStudents() async {
     final data = await supabaseService.getStudents();
     setState(() {
@@ -31,7 +30,6 @@ class _StudentScreenState extends State<StudentScreen> {
     });
   }
 
-  // CREATE
   Future<void> createStudent() async {
     await supabaseService.createStudent(
       nameController.text,
@@ -43,12 +41,11 @@ class _StudentScreenState extends State<StudentScreen> {
     fetchStudents();
   }
 
-  // UPDATE
   Future<void> updateStudent() async {
     if (selectedId == null) return;
 
     await supabaseService.updateStudent(
-      selectedId!,                        // always string now
+      selectedId!,
       nameController.text,
       int.parse(ageController.text),
     );
@@ -59,7 +56,6 @@ class _StudentScreenState extends State<StudentScreen> {
     fetchStudents();
   }
 
-  // DELETE
   Future<void> deleteStudent(String id) async {
     await supabaseService.deleteStudent(id);
     fetchStudents();
@@ -68,43 +64,59 @@ class _StudentScreenState extends State<StudentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple.shade200,
-      appBar: AppBar(title: const Text("Supabase CRUD Example")),
-
+      backgroundColor: Colors.blue.shade200,
+      appBar: AppBar(
+        backgroundColor: Colors.blue.shade300,
+        title: Text(
+          "SupaBase Demo With UI",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.blue.shade900,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Icon(
+              Icons.help_outline,
+              color: Colors.blue.shade900,
+            ),
+          ),
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            // FORM -------------------------
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: "Name"),
+              decoration: InputDecoration(
+                label: Text("Enter Name..."),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13)),
+              ),
             ),
+            SizedBox(height: 15),
             TextField(
               controller: ageController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: "Age"),
+              decoration: InputDecoration(
+                label: Text("Enter Age..."),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(13)),
+              ),
             ),
-
-            const SizedBox(height: 10),
-
+            SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: createStudent,
-                  child: const Text("Create"),
-                ),
+                    onPressed: createStudent, child: Text("Create")),
                 ElevatedButton(
-                  onPressed: updateStudent,
-                  child: const Text("Update"),
-                ),
+                    onPressed: updateStudent, child: Text("Update")),
               ],
             ),
-
-            const Divider(height: 30),
-
-            // LIST OF STUDENTS -------------------------
+            Divider(height: 50, color: Colors.black),
             Expanded(
               child: ListView.builder(
                 itemCount: students.length,
@@ -114,20 +126,18 @@ class _StudentScreenState extends State<StudentScreen> {
                   return ListTile(
                     title: Text(student['name']),
                     subtitle: Text("Age: ${student['age']}"),
-
                     onTap: () {
-                      // Load selected data into textfields for update
                       setState(() {
-                        selectedId = student['id'].toString();   // FIXED
+                        selectedId = student['id'].toString();
                         nameController.text = student['name'];
-                        ageController.text = student['age'].toString();
+                        ageController.text =
+                            student['age'].toString();
                       });
                     },
-
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
+                      icon: Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
-                        deleteStudent(student['id'].toString()); // FIXED
+                        deleteStudent(student['id'].toString());
                       },
                     ),
                   );
