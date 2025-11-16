@@ -47,8 +47,6 @@ class SupabaseService {
           .select()
           .single();
 
-      print("Update Response: $response");  // Debug log
-
       return response;
     } catch (error) {
       throw Exception("Update Error: $error");

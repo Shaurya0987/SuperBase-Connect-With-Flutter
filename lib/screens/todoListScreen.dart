@@ -1,4 +1,6 @@
-import 'package:MyAppSupaBase/supabase_service.dart';
+import 'package:MyAppSupaBase/screens/loginScreen.dart';
+import 'package:MyAppSupaBase/services/auth_service.dart';
+import 'package:MyAppSupaBase/services/supabase_service.dart';
 import 'package:flutter/material.dart';
 
 class mainScreen extends StatefulWidget {
@@ -75,12 +77,15 @@ class _mainScreenState extends State<mainScreen> {
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: Icon(
-              Icons.help_outline,
-              color: Colors.blue.shade900,
-            ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              await AuthService().logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => LoginScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -92,8 +97,8 @@ class _mainScreenState extends State<mainScreen> {
               controller: nameController,
               decoration: InputDecoration(
                 label: Text("Enter Name..."),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(13)),
               ),
             ),
             SizedBox(height: 15),
@@ -102,18 +107,16 @@ class _mainScreenState extends State<mainScreen> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 label: Text("Enter Age..."),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(13)),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(13)),
               ),
             ),
             SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                    onPressed: createStudent, child: Text("Create")),
-                ElevatedButton(
-                    onPressed: updateStudent, child: Text("Update")),
+                ElevatedButton(onPressed: createStudent, child: Text("Create")),
+                ElevatedButton(onPressed: updateStudent, child: Text("Update")),
               ],
             ),
             Divider(height: 50, color: Colors.black),
@@ -130,8 +133,7 @@ class _mainScreenState extends State<mainScreen> {
                       setState(() {
                         selectedId = student['id'].toString();
                         nameController.text = student['name'];
-                        ageController.text =
-                            student['age'].toString();
+                        ageController.text = student['age'].toString();
                       });
                     },
                     trailing: IconButton(
